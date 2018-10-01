@@ -1,0 +1,19 @@
+plugins {
+    id 'java'
+}
+
+group 'Hive'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+ext.junitJuniperVersion = "5.1.1"
+
+dependencies {
+    testCompile("org.junit.jupiter:junit-jupiter-api:" + junitJuniperVersion)
+    testRuntime("org.junit.jupiter:junit-jupiter-engine:" + junitJuniperVersion)
+}
