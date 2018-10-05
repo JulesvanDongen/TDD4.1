@@ -2,6 +2,7 @@ import nl.hanze.hive.Hive;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
+import java.util.Stack;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -14,13 +15,15 @@ public class BoardSpec {
 
     @Test
     public void whenPlaceTileOnNewBoardThenBoardShouldContainTile() {
-        HashMap<Position, Tile> map = new HashMap<>();
+        HashMap<Position, Stack<Tile>> map = new HashMap<>();
         Board board = new Board(map);
         try {
             Position position = new Position(0, 0);
-            Tile expected = new Tile(Hive.Player.WHITE, Hive.Tile.BEETLE);
+            Stack<Tile> expected = new Stack<>();
+            Tile expectedTile = new Tile(Hive.Player.WHITE, Hive.Tile.BEETLE);
+            expected.push(expectedTile);
             board.putTile(position, expected);
-            Tile result = map.get(position);
+            Stack<Tile> result = map.get(position);
             assertEquals(expected, result);
         } catch (IllegalPositionException e) {
             fail("IllegalPositionException was thrown: " + e.getMessage());
@@ -29,33 +32,45 @@ public class BoardSpec {
 
     @Test
     public void whenPlaceTileOnOtherTileThenThrowIllegalPositionException() {
-        HashMap<Position, Tile> map = new HashMap<>();
+        HashMap<Position, Stack<Tile>> map = new HashMap<>();
         Position k = new Position(0, 0);
-        map.put(k, new Tile(Hive.Player.WHITE, Hive.Tile.BEETLE));
+        Tile tile1 = new Tile(Hive.Player.WHITE, Hive.Tile.BEETLE);
+        Stack<Tile> tileStack = new Stack<>();
+        tileStack.push(tile1);
+
+        map.put(k, tileStack);
         Board board = new Board(map);
 
         assertThrows(IllegalPositionException.class, () -> {
-            board.putTile(k, new Tile(Hive.Player.WHITE, Hive.Tile.GRASSHOPPER));
+            Tile tile = new Tile(Hive.Player.WHITE, Hive.Tile.GRASSHOPPER);
+            Stack<Tile> tiles = new Stack<>();
+            tiles.push(tile);
+            board.putTile(k, tiles);
         });
     }
 
     @Test
     public void whenGetSurroundingTilesWithGrasshopperNearbyThenReturnGrasshopper() {
-        HashMap<Position, Tile> map = new HashMap<>();
-        map.put(new Position(1, 0), new Tile(Hive.Player.WHITE, Hive.Tile.GRASSHOPPER));
+        HashMap<Position, Stack<Tile>> map = new HashMap<>();
+        Tile tile = new Tile(Hive.Player.WHITE, Hive.Tile.GRASSHOPPER);
+        Stack<Tile> tiles = new Stack<>();
+        tiles.push(tile);
+        map.put(new Position(1, 0), tiles);
         Board board = new Board(map);
 
         Position k = new Position(0, 0);
 
-        HashMap<Position, Tile> actual = new HashMap<>();
-        actual.put(new Position(1, 0), new Tile(Hive.Player.WHITE, Hive.Tile.GRASSHOPPER));
+        HashMap<Position, Stack<Tile>> expected = new HashMap<>();
+        Stack<Tile> expectedTiles = new Stack<>();
+        expectedTiles.push(new Tile(Hive.Player.WHITE, Hive.Tile.GRASSHOPPER));
+        expected.put(new Position(1, 0), expectedTiles);
 
-        assertEquals(board.getSurroundingTiles(k), actual);
+        assertEquals(expected, board.getSurroundingTiles(k));
     }
 
     @Test
     public void whenMoveIsUsedOnEmptyTileThenThrowEmptyPositionException() {
-        HashMap<Position, Tile> map = new HashMap<>();
+        HashMap<Position, Stack<Tile>> map = new HashMap<>();
 
         Board board = new Board(map);
         assertThrows(EmptyPositionException.class, () -> {
@@ -65,16 +80,55 @@ public class BoardSpec {
 
     @Test
     public void whenMoveIsUsedThenTilePositionChanged() {
-        HashMap<Position, Tile> map = new HashMap<>();
+        HashMap<Position, Stack<Tile>> map = new HashMap<>();
         Tile tile = new Tile(Hive.Player.WHITE, Hive.Tile.GRASSHOPPER);
         Position oldPosition = new Position(0, 0);
         Position newPosition = new Position(0, 1);
-        map.put(oldPosition, tile);
+        Stack<Tile> tiles = new Stack<>();
+        tiles.push(tile);
+        map.put(oldPosition, tiles);
         Board board = new Board(map);
         try {
             board.moveTile(oldPosition, newPosition);
-            Tile movedTile = map.get(newPosition);
-            assertEquals(tile, movedTile);
+            Stack<Tile> movedTile = map.get(newPosition);
+            assertEquals(tile, movedTile.peek());
+        } catch (EmptyPositionException e) {
+            fail("Exception was thrown: " + e.getMessage());
+        }
+    }
+
+    @Test
+    public void whenStonesAreOnTopOfEachotherAndPositionIsMovedThenTopOneIsMoved() {
+        HashMap<Position, Stack<Tile>> map = new HashMap<>();
+        Stack<Tile> startingTiles = new Stack<>();
+        startingTiles.push(new Tile(Hive.Player.WHITE, Hive.Tile.GRASSHOPPER));
+        Tile topTile = new Tile(Hive.Player.BLACK, Hive.Tile.BEETLE);
+        startingTiles.push(topTile);
+        map.put(new Position(0, 0), startingTiles);
+        Board board = new Board(map);
+
+        try {
+            board.moveTile(new Position(0, 0), new Position(0, 1));
+            assertEquals(topTile, map.get(new Position(0,1)).peek());
+        } catch (EmptyPositionException e) {
+            fail("Exception was thrown: " + e.getMessage());
+        }
+    }
+
+    @Test
+    public void whenStonesAreOnTopOfEachotherAndPositionIsMovedThenTilesBelowAreNotMoved() {
+        HashMap<Position, Stack<Tile>> map = new HashMap<>();
+        Stack<Tile> startingTiles = new Stack<>();
+        Tile bottomTile = new Tile(Hive.Player.WHITE, Hive.Tile.GRASSHOPPER);
+        startingTiles.push(bottomTile);
+        Tile topTile = new Tile(Hive.Player.BLACK, Hive.Tile.BEETLE);
+        startingTiles.push(topTile);
+        map.put(new Position(0, 0), startingTiles);
+        Board board = new Board(map);
+
+        try {
+            board.moveTile(new Position(0, 0), new Position(0, 1));
+            assertEquals(bottomTile, map.get(new Position(0,0)).peek());
         } catch (EmptyPositionException e) {
             fail("Exception was thrown: " + e.getMessage());
         }

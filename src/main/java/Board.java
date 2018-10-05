@@ -1,12 +1,9 @@
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Board {
-    private Map<Position, Tile> internalState;
+    private HashMap<Position, Stack<Tile>> internalState;
 
-    public Board(HashMap<Position, Tile> internalState) {
+    public Board(HashMap<Position, Stack<Tile>> internalState) {
         this.internalState = internalState;
     }
 
@@ -14,15 +11,15 @@ public class Board {
         this.internalState = new HashMap<>();
     }
 
-    public Map<Position, Tile> getInternalState() {
+    public Map<Position, Stack<Tile>> getInternalState() {
         return internalState;
     }
 
-    public void setInternalState(HashMap<Position, Tile> internalState) {
+    public void setInternalState(HashMap<Position, Stack<Tile>> internalState) {
         this.internalState = internalState;
     }
 
-    public void putTile(Position position, Tile tile) throws IllegalPositionException {
+    public void putTile(Position position, Stack<Tile> tile) throws IllegalPositionException {
         if (internalState.containsKey(position)) {
             throw new IllegalPositionException();
         } else {
@@ -30,8 +27,8 @@ public class Board {
         }
     }
 
-    public Map<Position, Tile> getSurroundingTiles(Position position) {
-        HashMap<Position, Tile> surroundingTiles = new HashMap<>();
+    public Map<Position, Stack<Tile>> getSurroundingTiles(Position position) {
+        HashMap<Position, Stack<Tile>> surroundingTiles = new HashMap<>();
 
         ArrayList<Position> surroundingPositions = position.getSurroundingPositions();
 
@@ -48,9 +45,22 @@ public class Board {
         if (!internalState.containsKey(from)) {
             throw new EmptyPositionException();
         } else {
-            Tile tile = internalState.get(from);
-            internalState.remove(from);
-            internalState.put(to, tile);
+            Stack<Tile> tileStack = internalState.get(from);
+            Tile movedTile = tileStack.pop();
+
+            if (internalState.isEmpty()) {
+                internalState.remove(from);
+            }
+
+            if (internalState.containsKey(to)) {
+                Stack<Tile> tiles = internalState.get(to);
+                tiles.push(movedTile);
+            } else {
+                Stack<Tile> stack = new Stack<>();
+                stack.push(movedTile);
+                internalState.put(to, stack);
+
+            }
         }
     }
 }
