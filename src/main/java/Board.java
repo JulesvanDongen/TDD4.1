@@ -19,12 +19,15 @@ public class Board {
         this.internalState = internalState;
     }
 
-    public void putTile(Position position, Stack<Tile> tile) throws IllegalPositionException {
-        if (internalState.containsKey(position)) {
-            throw new IllegalPositionException();
+    public void putTile(Position position, Tile tile) throws IllegalPositionException {
+        Stack<Tile> tiles;
+        if (!internalState.containsKey(position)) {
+            tiles = new Stack<>();
+            internalState.put(position, tiles);
         } else {
-            internalState.put(position, tile);
+            tiles = internalState.get(position);
         }
+        tiles.push(tile);
     }
 
     public Map<Position, Stack<Tile>> getSurroundingTiles(Position position) {

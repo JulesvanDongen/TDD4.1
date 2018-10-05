@@ -1,4 +1,5 @@
 import nl.hanze.hive.Hive;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
@@ -8,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class BoardSpec {
     @Test
+    @Tag("2c")
     public void whenNewBoardShouldBeEmpty() {
         Board board = new Board();
         assertTrue(board.getInternalState().isEmpty());
@@ -22,7 +24,7 @@ public class BoardSpec {
             Stack<Tile> expected = new Stack<>();
             Tile expectedTile = new Tile(Hive.Player.WHITE, Hive.Tile.BEETLE);
             expected.push(expectedTile);
-            board.putTile(position, expected);
+            board.putTile(position, expectedTile);
             Stack<Tile> result = map.get(position);
             assertEquals(expected, result);
         } catch (IllegalPositionException e) {
@@ -31,7 +33,8 @@ public class BoardSpec {
     }
 
     @Test
-    public void whenPlaceTileOnOtherTileThenThrowIllegalPositionException() {
+    @Tag("2f")
+    public void whenPlaceTileOnOtherTileThenNotThrowIllegalPositionException() {
         HashMap<Position, Stack<Tile>> map = new HashMap<>();
         Position k = new Position(0, 0);
         Tile tile1 = new Tile(Hive.Player.WHITE, Hive.Tile.BEETLE);
@@ -41,15 +44,18 @@ public class BoardSpec {
         map.put(k, tileStack);
         Board board = new Board(map);
 
-        assertThrows(IllegalPositionException.class, () -> {
-            Tile tile = new Tile(Hive.Player.WHITE, Hive.Tile.GRASSHOPPER);
-            Stack<Tile> tiles = new Stack<>();
-            tiles.push(tile);
-            board.putTile(k, tiles);
-        });
+        Tile tile = new Tile(Hive.Player.WHITE, Hive.Tile.GRASSHOPPER);
+        Stack<Tile> tiles = new Stack<>();
+        tiles.push(tile);
+        try {
+            board.putTile(k, tile);
+        } catch (IllegalPositionException e) {
+            fail("Exception was thrown");
+        }
     }
 
     @Test
+    @Tag("Utility")
     public void whenGetSurroundingTilesWithGrasshopperNearbyThenReturnGrasshopper() {
         HashMap<Position, Stack<Tile>> map = new HashMap<>();
         Tile tile = new Tile(Hive.Player.WHITE, Hive.Tile.GRASSHOPPER);
@@ -69,6 +75,7 @@ public class BoardSpec {
     }
 
     @Test
+    @Tag("2e")
     public void whenMoveIsUsedOnEmptyTileThenThrowEmptyPositionException() {
         HashMap<Position, Stack<Tile>> map = new HashMap<>();
 
@@ -79,6 +86,7 @@ public class BoardSpec {
     }
 
     @Test
+    @Tag("2a")
     public void whenMoveIsUsedThenTilePositionChanged() {
         HashMap<Position, Stack<Tile>> map = new HashMap<>();
         Tile tile = new Tile(Hive.Player.WHITE, Hive.Tile.GRASSHOPPER);
@@ -98,6 +106,7 @@ public class BoardSpec {
     }
 
     @Test
+    @Tag("2f")
     public void whenStonesAreOnTopOfEachotherAndPositionIsMovedThenTopOneIsMoved() {
         HashMap<Position, Stack<Tile>> map = new HashMap<>();
         Stack<Tile> startingTiles = new Stack<>();
@@ -116,6 +125,7 @@ public class BoardSpec {
     }
 
     @Test
+    @Tag("2f")
     public void whenStonesAreOnTopOfEachotherAndPositionIsMovedThenTilesBelowAreNotMoved() {
         HashMap<Position, Stack<Tile>> map = new HashMap<>();
         Stack<Tile> startingTiles = new Stack<>();
