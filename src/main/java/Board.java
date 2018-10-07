@@ -1,9 +1,9 @@
 import java.util.*;
 
 public class Board {
-    private HashMap<Position, Stack<Tile>> internalState;
+    private Map<Position, Stack<Tile>> internalState;
 
-    public Board(HashMap<Position, Stack<Tile>> internalState) {
+    public Board(Map<Position, Stack<Tile>> internalState) {
         this.internalState = internalState;
     }
 
@@ -15,7 +15,7 @@ public class Board {
         return internalState;
     }
 
-    public void setInternalState(HashMap<Position, Stack<Tile>> internalState) {
+    public void setInternalState(Map<Position, Stack<Tile>> internalState) {
         this.internalState = internalState;
     }
 
@@ -31,7 +31,7 @@ public class Board {
     }
 
     public Map<Position, Stack<Tile>> getSurroundingTiles(Position position) {
-        HashMap<Position, Stack<Tile>> surroundingTiles = new HashMap<>();
+        Map<Position, Stack<Tile>> surroundingTiles = new HashMap<>();
 
         ArrayList<Position> surroundingPositions = position.getSurroundingPositions();
 
