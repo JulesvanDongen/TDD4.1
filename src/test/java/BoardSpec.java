@@ -68,7 +68,7 @@ public class BoardSpec {
 
         HashMap<Position, Stack<Tile>> expected = new HashMap<>();
         Stack<Tile> expectedTiles = new Stack<>();
-        expectedTiles.push(new Tile(Hive.Player.WHITE, Hive.Tile.GRASSHOPPER));
+        expectedTiles.push(tile);
         expected.put(new Position(1, 0), expectedTiles);
 
         assertEquals(expected, board.getSurroundingTiles(k));
@@ -102,6 +102,47 @@ public class BoardSpec {
             assertEquals(tile, movedTile.peek());
         } catch (EmptyPositionException e) {
             fail("Exception was thrown: " + e.getMessage());
+        }
+    }
+
+    @Test
+    @Tag("2d")
+    public void whenTileAlreadyPlayedThenThrowIllegalPositionException(){
+        Board b = new Board();
+        Tile t = new Tile(Hive.Player.BLACK, Hive.Tile.QUEEN_BEE);
+        Position p1 = new Position(0, 0);
+        Position p2 = new Position(1,1);
+
+        try {
+            b.putTile(p1, t);
+        } catch (IllegalPositionException e) {
+            fail("Tile could not be placed. " + e.getMessage());
+        }
+
+        assertThrows(IllegalPositionException.class, () -> b.putTile(p2, t));
+
+    }
+
+    @Test
+    @Tag("2d")
+    public void whenTwoDifferentTilesPlayedThenNoException(){
+        Board b = new Board();
+        Tile t1 = new Tile(Hive.Player.BLACK, Hive.Tile.BEETLE);
+        Tile t2 = new Tile(Hive.Player.BLACK, Hive.Tile.BEETLE);
+
+        Position p1 = new Position(0, 0);
+        Position p2 = new Position(1, 1);
+
+        try {
+            b.putTile(p1, t1);
+        } catch (IllegalPositionException e) {
+           fail("The first tile should be able to be placed " + e.getMessage());
+        }
+
+        try {
+            b.putTile(p2, t2);
+        } catch (IllegalPositionException e) {
+           fail("The second tile should be able to be placed " + e.getMessage());
         }
     }
 
