@@ -21,6 +21,14 @@ public class Tile {
         this.tile = tile;
     }
 
+    public boolean sameKind(Tile t){
+        return tile.equals(t.tile);
+    }
+
+    public boolean sameKind(Hive.Tile kind) {
+        return tile.equals(kind);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
