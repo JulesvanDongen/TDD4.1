@@ -1,10 +1,16 @@
 import nl.hanze.hive.Hive;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import sun.security.provider.ConfigFile;
 
-import java.util.List;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class HiveGameSpec {
 
@@ -53,14 +59,30 @@ class HiveGameSpec {
     @Test
     @Tag("3b")
     public void whenTileMovedThenOpponentsTurn() {
-        HiveGame game = new HiveGame(new Board());
+        HashMap<Position, Stack<Tile>> map = new HashMap<>();
+        Stack<Tile> a = new Stack<>();
+        Beetle beetle = mock(Beetle.class);
+
+        when(beetle.samePlayer(any(Hive.Player.class))).thenReturn(true);
+
+        HashSet<Position> retval = new HashSet<Position>();
+        retval.add(new Position(1, 0));
+        when(beetle.getPossibleMoves(any(Board.class), any(Position.class))).thenReturn(retval);
+
+        a.push(beetle);
+        map.put(new Position(1, 1), a);
+
+        Stack<Tile> b = new Stack<>();
+        Spider spider = mock(Spider.class);
+
+        b.push(spider);
+        map.put(new Position(0, 0), b);
+
+        HiveGame game = new HiveGame(new Board(map));
         Player p1 = game.getTurn();
         Player p2 = null;
 
         try {
-            game.play(Hive.Tile.BEETLE, 1,1);
-            p2 = game.getTurn();
-            game.play(Hive.Tile.SPIDER, 0, 0);
             game.move(1,1, 1,0);
         } catch (Hive.IllegalMove illegalMove) {
             fail(illegalMove);
@@ -153,5 +175,27 @@ class HiveGameSpec {
         );
     }
 
+    @Test
+    @Tag("5a")
+    public void whenPlayerMovesOpponentTileThenShouldThrowIllegalMoveException() {
+        HashMap<Position, Stack<Tile>> map = new HashMap<>();
 
+        Stack<Tile> a = new Stack<>();
+        a.push(new Beetle(Hive.Player.BLACK));
+        map.put(new Position(0, 0), a);
+
+        Stack<Tile> b = new Stack<>();
+        b.push(new Beetle(Hive.Player.WHITE));
+        map.put(new Position(1, 0), b);
+
+        Board board = new Board(map);
+        HiveGame hiveGame = new HiveGame(board);
+
+        Player turn = hiveGame.getTurn();
+        System.out.println(turn.getColor());
+
+        assertThrows(Hive.IllegalMove.class, () -> {
+            hiveGame.move(0, 0, 1, 0);
+        });
+    }
 }

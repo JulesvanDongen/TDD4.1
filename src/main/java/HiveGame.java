@@ -28,7 +28,13 @@ class HiveGame {
     }
 
     public void move(int fromQ, int fromR, int toQ, int toR) throws Hive.IllegalMove {
-        switchTurns();
+        Tile topTile = board.getInternalState().get(new Position(fromQ, fromR)).peek();
+        if (topTile.samePlayer(currentPlayer.getColor())) {
+            board.moveTile(new Position(fromQ,fromR), new Position(toQ, toR));
+            switchTurns();
+        } else {
+            throw new Hive.IllegalMove("You cannot move your opponent's tiles.");
+        }
     }
 
     public void pass() throws Hive.IllegalMove {
