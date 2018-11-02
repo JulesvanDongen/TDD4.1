@@ -31,17 +31,17 @@ class HiveGame {
     }
 
     public void move(int fromQ, int fromR, int toQ, int toR) throws Hive.IllegalMove {
-        Tile topTile = board.getInternalState().get(new Position(fromQ, fromR)).peek();
-        if (!currentPlayer.hasQueenBee()) {
-            if (topTile.samePlayer(currentPlayer.getColor())) {
-                board.moveTile(new Position(fromQ, fromR), new Position(toQ, toR));
-                switchTurns();
-            } else {
-                throw new Hive.IllegalMove("You cannot move your opponent's tiles.");
-            }
-        } else {
+        if (currentPlayer.hasQueenBee()) {
             throw new Hive.IllegalMove("You need to play your Queen Bee before you can move your tiles.");
         }
+
+        Tile topTile = board.getInternalState().get(new Position(fromQ, fromR)).peek();
+        if (!topTile.samePlayer(currentPlayer.getColor())) {
+            throw new Hive.IllegalMove("You cannot move your opponent's tiles.");
+        }
+
+        board.moveTile(new Position(fromQ, fromR), new Position(toQ, toR));
+        switchTurns();
     }
 
     public void pass() throws Hive.IllegalMove {

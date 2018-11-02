@@ -227,4 +227,21 @@ class HiveGameSpec {
             hiveGame.move(1,0, 0,0);
         });
     }
+
+    @Test
+    @Tag("5c")
+    public void whenTileMovedToPositionNotNextToOtherTileThenThrowIllegalMoveException() {
+        HashMap<Position, Stack<Tile>> map = new HashMap<>();
+
+        Stack<Tile> a = new Stack<>();
+        a.push(new Beetle(Hive.Player.WHITE));
+        map.put(new Position(0, 0), a);
+
+        Board board = new Board(map);
+        HiveGame hiveGame = new HiveGame(board);
+
+        assertThrows(Hive.IllegalMove.class, () -> {
+            hiveGame.move(0,0, 1,0);
+        });
+    }
 }
