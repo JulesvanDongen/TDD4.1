@@ -3,9 +3,13 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Stack;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class BoardSpec {
     @Test
@@ -22,7 +26,7 @@ public class BoardSpec {
         try {
             Position position = new Position(0, 0);
             Stack<Tile> expected = new Stack<>();
-            Tile expectedTile = new Tile(Hive.Player.WHITE, Hive.Tile.BEETLE);
+            Tile expectedTile = mock(Beetle.class);
             expected.push(expectedTile);
             board.putTile(position, expectedTile);
             Stack<Tile> result = map.get(position);
@@ -37,14 +41,14 @@ public class BoardSpec {
     public void whenPlaceTileOnOtherTileThenNotThrowIllegalPositionException() {
         HashMap<Position, Stack<Tile>> map = new HashMap<>();
         Position k = new Position(0, 0);
-        Tile tile1 = new Tile(Hive.Player.WHITE, Hive.Tile.BEETLE);
+        Tile tile1 = mock(Beetle.class);
         Stack<Tile> tileStack = new Stack<>();
         tileStack.push(tile1);
 
         map.put(k, tileStack);
         Board board = new Board(map);
 
-        Tile tile = new Tile(Hive.Player.WHITE, Hive.Tile.GRASSHOPPER);
+        Tile tile = mock(Beetle.class);
         Stack<Tile> tiles = new Stack<>();
         tiles.push(tile);
         try {
@@ -58,7 +62,7 @@ public class BoardSpec {
     @Tag("Utility")
     public void whenGetSurroundingTilesWithGrasshopperNearbyThenReturnGrasshopper() {
         HashMap<Position, Stack<Tile>> map = new HashMap<>();
-        Tile tile = new Tile(Hive.Player.WHITE, Hive.Tile.GRASSHOPPER);
+        Tile tile = mock(Beetle.class);
         Stack<Tile> tiles = new Stack<>();
         tiles.push(tile);
         map.put(new Position(1, 0), tiles);
@@ -89,13 +93,16 @@ public class BoardSpec {
     @Tag("2a")
     public void whenMoveIsUsedThenTilePositionChanged() {
         HashMap<Position, Stack<Tile>> map = new HashMap<>();
-        Tile tile = new Tile(Hive.Player.WHITE, Hive.Tile.GRASSHOPPER);
+        Tile tile = mock(Beetle.class);
         Position oldPosition = new Position(0, 0);
         Position newPosition = new Position(0, 1);
         Stack<Tile> tiles = new Stack<>();
         tiles.push(tile);
         map.put(oldPosition, tiles);
         Board board = new Board(map);
+        HashSet<Position> positions = new HashSet<>(oldPosition.getSurroundingPositions());
+        System.out.println(positions);
+        when(tile.getPossibleMoves(any(Board.class), any(Position.class))).thenReturn(positions);
         try {
             board.moveTile(oldPosition, newPosition);
             Stack<Tile> movedTile = map.get(newPosition);
@@ -109,7 +116,7 @@ public class BoardSpec {
     @Tag("2d")
     public void whenTileAlreadyPlayedThenThrowIllegalPositionException(){
         Board b = new Board();
-        Tile t = new Tile(Hive.Player.BLACK, Hive.Tile.QUEEN_BEE);
+        Tile t = new QueenBee(Hive.Player.BLACK);
         Position p1 = new Position(0, 0);
         Position p2 = new Position(1,1);
 
@@ -127,8 +134,8 @@ public class BoardSpec {
     @Tag("2d")
     public void whenTwoDifferentTilesPlayedThenNoException(){
         Board b = new Board();
-        Tile t1 = new Tile(Hive.Player.BLACK, Hive.Tile.BEETLE);
-        Tile t2 = new Tile(Hive.Player.BLACK, Hive.Tile.BEETLE);
+        Tile t1 = new Beetle(Hive.Player.BLACK);
+        Tile t2 = new Beetle(Hive.Player.BLACK);
 
         Position p1 = new Position(0, 0);
         Position p2 = new Position(1, 1);
@@ -151,14 +158,16 @@ public class BoardSpec {
     public void whenStonesAreOnTopOfEachotherAndPositionIsMovedThenTopOneIsMoved() {
         HashMap<Position, Stack<Tile>> map = new HashMap<>();
         Stack<Tile> startingTiles = new Stack<>();
-        startingTiles.push(new Tile(Hive.Player.WHITE, Hive.Tile.GRASSHOPPER));
-        Tile topTile = new Tile(Hive.Player.BLACK, Hive.Tile.BEETLE);
+        startingTiles.push(mock(Grasshopper.class));
+        Tile topTile = mock(Beetle.class);
+        Position oldPosition = new Position(0, 0);
+        when(topTile.getPossibleMoves(any(Board.class), any(Position.class))).thenReturn(new HashSet<>(oldPosition.getSurroundingPositions()));
         startingTiles.push(topTile);
-        map.put(new Position(0, 0), startingTiles);
+        map.put(oldPosition, startingTiles);
         Board board = new Board(map);
 
         try {
-            board.moveTile(new Position(0, 0), new Position(0, 1));
+            board.moveTile(oldPosition, new Position(0, 1));
             assertEquals(topTile, map.get(new Position(0,1)).peek());
         } catch (Hive.IllegalMove e) {
             fail("Exception was thrown: " + e.getMessage());
@@ -170,16 +179,39 @@ public class BoardSpec {
     public void whenStonesAreOnTopOfEachotherAndPositionIsMovedThenTilesBelowAreNotMoved() {
         HashMap<Position, Stack<Tile>> map = new HashMap<>();
         Stack<Tile> startingTiles = new Stack<>();
-        Tile bottomTile = new Tile(Hive.Player.WHITE, Hive.Tile.GRASSHOPPER);
+        Tile bottomTile = mock(Beetle.class);
         startingTiles.push(bottomTile);
-        Tile topTile = new Tile(Hive.Player.BLACK, Hive.Tile.BEETLE);
+        Tile topTile = mock(Grasshopper.class);
         startingTiles.push(topTile);
-        map.put(new Position(0, 0), startingTiles);
+        Position oldPosition = new Position(0, 0);
+        when(topTile.getPossibleMoves(any(Board.class), any(Position.class))).thenReturn(new HashSet<>(oldPosition.getSurroundingPositions()));
+        map.put(oldPosition, startingTiles);
         Board board = new Board(map);
 
         try {
-            board.moveTile(new Position(0, 0), new Position(0, 1));
-            assertEquals(bottomTile, map.get(new Position(0,0)).peek());
+            board.moveTile(oldPosition, new Position(0, 1));
+            assertEquals(bottomTile, map.get(oldPosition).peek());
+        } catch (Exception e) {
+            fail("Exception was thrown: " + e.getMessage());
+        }
+    }
+
+    @Test
+    public void whenAllTilesAreRemovedFromPositionThenPositionHasTileShouldReturnFalse() {
+        HashMap<Position, Stack<Tile>> map = new HashMap<>();
+        Stack<Tile> tiles = new Stack<>();
+        Beetle beetle = mock(Beetle.class);
+        tiles.push(beetle);
+
+
+        Position oldPosition = new Position(0, 0);
+        when(beetle.getPossibleMoves(any(Board.class), any(Position.class))).thenReturn(new HashSet<>(oldPosition.getSurroundingPositions()));
+        map.put(oldPosition, tiles);
+        Board board = new Board(map);
+
+        try {
+            board.moveTile(oldPosition, new Position(1, 0));
+            assertFalse(board.positionHasTile(oldPosition));
         } catch (Hive.IllegalMove e) {
             fail("Exception was thrown: " + e.getMessage());
         }

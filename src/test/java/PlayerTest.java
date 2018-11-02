@@ -9,7 +9,7 @@ class PlayerTest {
 
     @Test
     void whenPlayerCreatedThenPlayerHasOneQueenBee(){
-        Tile queenBee = new Tile(Hive.Player.BLACK, Hive.Tile.QUEEN_BEE);
+        Tile queenBee = new QueenBee(Hive.Player.BLACK);
         Player p = new Player(Hive.Player.BLACK);
         List<Tile> hand = p.availableTiles();
         int amountQueens = (int) hand.stream()
@@ -26,7 +26,7 @@ class PlayerTest {
 
     @Test
     void whenPlayerCreatedThenPlayerHasTwoSpider(){
-        Tile spider = new Tile(Hive.Player.BLACK, Hive.Tile.SPIDER);
+        Tile spider = new Spider(Hive.Player.BLACK);
         Player p = new Player(Hive.Player.BLACK);
         List<Tile> hand = p.availableTiles();
         int amountSpider = (int) hand.stream()

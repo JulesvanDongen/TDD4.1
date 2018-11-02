@@ -9,8 +9,8 @@ class TileTest {
     @Test
     @Tag("2d")
     void whenTwoDifferentTilesOfSamePlayerAndSameCharacterThenNotEqual(){
-        Tile t1 = new Tile(Hive.Player.BLACK, Hive.Tile.BEETLE);
-        Tile t2 = new Tile(Hive.Player.BLACK, Hive.Tile.BEETLE);
+        Tile t1 = new Beetle(Hive.Player.BLACK);
+        Tile t2 = new Beetle(Hive.Player.BLACK);
 
         assertFalse(t1.equals(t2));
     }

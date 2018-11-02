@@ -54,6 +54,10 @@ public class Board {
         return surroundingTiles;
     }
 
+    public boolean positionHasTile(Position position) {
+        return internalState.keySet().contains(position);
+    }
+
     public void moveTile(Position from, Position to) throws Hive.IllegalMove {
         if (!internalState.containsKey(from)) {
             throw new Hive.IllegalMove();
@@ -61,19 +65,38 @@ public class Board {
             Stack<Tile> tileStack = internalState.get(from);
             Tile movedTile = tileStack.pop();
 
-            if (internalState.isEmpty()) {
-                internalState.remove(from);
-            }
+            Set<Position> possibleMoves = movedTile.getPossibleMoves(this, from);
+            if (possibleMoves.contains(to)) {
 
-            if (internalState.containsKey(to)) {
-                Stack<Tile> tiles = internalState.get(to);
-                tiles.push(movedTile);
+
+                if (tileStack.isEmpty()) {
+                    internalState.remove(from);
+                }
+
+                if (internalState.containsKey(to)) {
+                    Stack<Tile> tiles = internalState.get(to);
+                    tiles.push(movedTile);
+                } else {
+                    Stack<Tile> stack = new Stack<>();
+                    stack.push(movedTile);
+                    internalState.put(to, stack);
+                }
             } else {
-                Stack<Tile> stack = new Stack<>();
-                stack.push(movedTile);
-                internalState.put(to, stack);
-
+                throw new Hive.IllegalMove();
             }
+        }
+    }
+
+    public boolean isTileNearHive(Position position) {
+        Map<Position, Stack<Tile>> surroundingTiles = getSurroundingTiles(position);
+        return !surroundingTiles.keySet().isEmpty();
+    }
+
+    public int getPositionHeight(Position position) {
+        if (internalState.keySet().contains(position)) {
+            return internalState.get(position).size();
+        } else {
+            return 0;
         }
     }
 }
