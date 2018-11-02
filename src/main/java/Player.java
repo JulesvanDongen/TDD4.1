@@ -6,23 +6,36 @@ class Player {
 
     private List<Tile> tiles;
     private Hive.Player color;
+    private int tilesPlayed;
+    private boolean isQueenPlayed;
 
     public Player(Hive.Player color) {
         this.color = color;
+        tilesPlayed = 0;
+        isQueenPlayed = false;
         tiles = initTiles();
     }
 
-    public Tile playTile(Hive.Tile kind) throws NoSuchTileException{
+    public Tile playTile(Hive.Tile kind) throws NoSuchTileException, Hive.IllegalMove {
+
+        if(!isQueenPlayed && tilesPlayed >= 3){
+            throw new Hive.IllegalMove("Queen bee should be the fourth played tile");
+        }
+
         Tile tile = tiles.stream()
                 .filter(t -> t.sameKind(kind))
                 .findFirst()
                 .orElseThrow(() -> new NoSuchTileException("The tile of kind " + kind + "does not exist"));
 
+        if(tile.sameKind(Hive.Tile.QUEEN_BEE)) {
+            isQueenPlayed = true;
+        }
         tiles.remove(tile);
+        tilesPlayed++;
         return tile;
     }
 
-                         /**
+    /**
      * @return A view of the tiles this player still has available
      */
     public List<Tile> availableTiles() {
