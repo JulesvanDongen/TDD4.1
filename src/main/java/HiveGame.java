@@ -60,13 +60,15 @@ class HiveGame {
 
         // if queen present, check if surrounded by opponent
         if (queenPos != null) {
-            Set<Position> positionsAroundQueen = board.getSurroundingTiles(queenPos).keySet();
-            Stream<Tile> tilesAroundQueen = positionsAroundQueen.stream()
+            List<Position> positionsAroundQueen = queenPos.getSurroundingPositions();
+            List<Tile> tilesAroundQueen = positionsAroundQueen.stream()
                     .map(p -> board.getInternalState().get(p)) // Stream<Stack<Tile>>
+                    .filter(stack -> stack != null)
                     .map(ArrayList::new)                       // Stream<List<Tile>>
-                    .flatMap(List::stream);                    // Stream<Tile> -> all tiles surrounding queen
+                    .flatMap(List::stream)                     // Stream<Tile> -> all tiles surrounding queen
+                    .collect(Collectors.toList());
 
-            isWin = tilesAroundQueen.allMatch(t -> t.samePlayer(player)); //all tiles surrounding queen are owned by opp.
+            isWin = tilesAroundQueen.size() == 6 && tilesAroundQueen.stream().allMatch(t -> t.samePlayer(player));
         }
 
         return isWin;

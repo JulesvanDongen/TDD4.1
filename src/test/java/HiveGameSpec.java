@@ -1,8 +1,10 @@
+import javafx.geometry.Pos;
 import nl.hanze.hive.Hive;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
@@ -97,6 +99,35 @@ class HiveGameSpec {
 
         // In this case black should have won
         assertTrue(game.isWinner(Hive.Player.BLACK));
+    }
+
+    @Test
+    public void whenQueenSurroundedByFiveTilesThenNoWin() {
+        Board b = new Board();
+
+        Position queenPos = new Position(0, 0);
+        try {
+            b.putTile(queenPos, new QueenBee(Hive.Player.WHITE));
+        } catch (IllegalPositionException e) {
+            e.printStackTrace();
+        }
+
+        //surround whit queen whith  5 black grasshoppers
+        List<Position> posAroundQueen = queenPos.getSurroundingPositions();
+        try {
+            for(int i = 0; i < 5 && i < posAroundQueen.size(); i++){
+                Position p = posAroundQueen.get(i);
+                b.putTile(p, new Grasshopper(Hive.Player.BLACK));
+            }
+        } catch (IllegalPositionException e) {
+            e.printStackTrace();
+        }
+
+
+        HiveGame game = new HiveGame(b);
+
+        // In this case black should have won
+        assertFalse(game.isWinner(Hive.Player.BLACK));
     }
 
 
