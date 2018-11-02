@@ -75,7 +75,9 @@ class HiveGame {
     }
 
     public boolean isDraw() {
-        return false;
+        boolean whiteWins = isWinner(Hive.Player.WHITE);
+        boolean blackWins = isWinner(Hive.Player.BLACK);
+        return blackWins && whiteWins;
     }
 
     public Player getTurn() {

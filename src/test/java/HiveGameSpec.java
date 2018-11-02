@@ -2,6 +2,8 @@ import javafx.geometry.Pos;
 import nl.hanze.hive.Hive;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock.*;
+import org.mockito.Mockito.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -9,6 +11,8 @@ import java.util.Map;
 import java.util.Stack;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class HiveGameSpec {
 
@@ -128,6 +132,33 @@ class HiveGameSpec {
 
         // In this case black should have won
         assertFalse(game.isWinner(Hive.Player.BLACK));
+    }
+
+    @Test
+    @Tag("3d")
+    public void whenBothPlayersWinThenDraw(){
+        Board b = new Board();
+
+        Position whiteQueenPos = new Position(0, 0);
+        Position blackQueenPos = new Position(3, 0);
+
+        try{
+            for(Position p : whiteQueenPos.getSurroundingPositions()){
+                b.putTile(p, new Grasshopper(Hive.Player.BLACK));
+            }
+            for(Position p: blackQueenPos.getSurroundingPositions()) {
+                b.putTile(p, new Grasshopper(Hive.Player.WHITE));
+            }
+        } catch (IllegalPositionException e) {
+            e.printStackTrace();
+        }
+
+        HiveGame g = new HiveGame(b);
+        assertAll(
+                () -> g.isWinner(Hive.Player.WHITE),
+                () -> g.isWinner(Hive.Player.BLACK),
+                () -> g.isDraw()
+        );
     }
 
 
