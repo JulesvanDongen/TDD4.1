@@ -15,10 +15,10 @@ public interface Hive {
 
     /**
      * Move an existing tile.
-     * @param fromQ Q coordinate of the tile to moveTile
-     * @param fromR R coordinate of the tile to moveTile
-     * @param toQ Q coordinate of the hexagon to moveTile to
-     * @param toR R coordinare of the hexagon to moveTile to
+     * @param fromQ Q coordinate of the tile to move
+     * @param fromR R coordinate of the tile to move
+     * @param toQ Q coordinate of the hexagon to move to
+     * @param toR R coordinare of the hexagon to move to
      * @throws IllegalMove If the tile could not be moved
      */
     void move(int fromQ, int fromR, int toQ, int toR) throws IllegalMove;
@@ -43,11 +43,11 @@ public interface Hive {
     boolean isDraw();
 
     /**
-     * Illegal moveTile exception.
+     * Illegal move exception.
      */
     class IllegalMove extends Exception {
-        IllegalMove() { super(); }
-        IllegalMove(String message) { super(message); }
+        public IllegalMove() { super(); }
+        public IllegalMove(String message) { super(message); }
     }
 
     /**

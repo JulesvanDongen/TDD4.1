@@ -30,7 +30,7 @@ public class TileSpec {
 
         Board board = new Board(map);
 
-        assertThrows(ImpossibleMoveException.class, () -> {
+        assertThrows(Hive.IllegalMove.class, () -> {
             board.moveTile(new Position(0,0), new Position(1,1));
         });
     }

@@ -31,7 +31,7 @@ public class BoardSpec {
             board.putTile(position, expectedTile);
             Stack<Tile> result = map.get(position);
             assertEquals(expected, result);
-        } catch (IllegalPositionException e) {
+        } catch (Hive.IllegalMove e) {
             fail("IllegalPositionException was thrown: " + e.getMessage());
         }
     }
@@ -53,8 +53,8 @@ public class BoardSpec {
         tiles.push(tile);
         try {
             board.putTile(k, tile);
-        } catch (IllegalPositionException e) {
-            fail("Exception was thrown");
+        } catch (Hive.IllegalMove e) {
+            fail("Exception was thrown: " + e.getMessage());
         }
     }
 
@@ -84,7 +84,7 @@ public class BoardSpec {
         HashMap<Position, Stack<Tile>> map = new HashMap<>();
 
         Board board = new Board(map);
-        assertThrows(EmptyPositionException.class, () -> {
+        assertThrows(Hive.IllegalMove.class, () -> {
             board.moveTile(new Position(0,0), new Position(0,1));
         });
     }
@@ -107,7 +107,7 @@ public class BoardSpec {
             board.moveTile(oldPosition, newPosition);
             Stack<Tile> movedTile = map.get(newPosition);
             assertEquals(tile, movedTile.peek());
-        } catch (Exception e) {
+        } catch (Hive.IllegalMove e) {
             fail("Exception was thrown: " + e.getMessage());
         }
     }
@@ -122,11 +122,11 @@ public class BoardSpec {
 
         try {
             b.putTile(p1, t);
-        } catch (IllegalPositionException e) {
+        } catch (Hive.IllegalMove e) {
             fail("Tile could not be placed. " + e.getMessage());
         }
 
-        assertThrows(IllegalPositionException.class, () -> b.putTile(p2, t));
+        assertThrows(Hive.IllegalMove.class, () -> b.putTile(p2, t));
 
     }
 
@@ -142,13 +142,13 @@ public class BoardSpec {
 
         try {
             b.putTile(p1, t1);
-        } catch (IllegalPositionException e) {
+        } catch (Hive.IllegalMove e) {
            fail("The first tile should be able to be placed " + e.getMessage());
         }
 
         try {
             b.putTile(p2, t2);
-        } catch (IllegalPositionException e) {
+        } catch (Hive.IllegalMove e) {
            fail("The second tile should be able to be placed " + e.getMessage());
         }
     }
@@ -169,7 +169,7 @@ public class BoardSpec {
         try {
             board.moveTile(oldPosition, new Position(0, 1));
             assertEquals(topTile, map.get(new Position(0,1)).peek());
-        } catch (Exception e) {
+        } catch (Hive.IllegalMove e) {
             fail("Exception was thrown: " + e.getMessage());
         }
     }
@@ -212,7 +212,7 @@ public class BoardSpec {
         try {
             board.moveTile(oldPosition, new Position(1, 0));
             assertFalse(board.positionHasTile(oldPosition));
-        } catch (Exception e) {
+        } catch (Hive.IllegalMove e) {
             fail("Exception was thrown: " + e.getMessage());
         }
     }
