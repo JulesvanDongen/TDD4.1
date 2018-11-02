@@ -85,7 +85,7 @@ class HiveGameSpec {
 
         try {
             player1.playTile(Hive.Tile.QUEEN_BEE); // Play the Queen Bee before moving
-        } catch (NoSuchTileException e) {
+        } catch (NoSuchTileException | Hive.IllegalMove e) {
             fail(e);
         }
 
