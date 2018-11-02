@@ -9,6 +9,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 
 import static org.mockito.Mockito.when;
@@ -267,6 +268,28 @@ class HiveGameSpec {
         }
 
         assertThrows(Hive.IllegalMove.class, () -> g2.play(Hive.Tile.BEETLE, 13, 13));
+
+    }
+
+    @Test
+    @Tag("4c")
+    public void whenTilePlayedOnBoardWithTilesThenTileMustBePlayedAdjecentToAtLeastOneTile(){
+        Board b = new Board();
+        Map<Position, Stack<Tile>> intState = b.getInternalState();
+
+        try {
+            Position p1 = new Position(0, 0);
+            b.putTile(p1, new QueenBee(Hive.Player.WHITE));
+
+            Position p2 = new Position(0,1);
+            b.putTile(p2, new Grasshopper(Hive.Player.BLACK));
+
+        } catch (Hive.IllegalMove illegalMove) {
+            illegalMove.printStackTrace();
+        }
+
+        HiveGame g = new HiveGame(b);
+        assertThrows(Hive.IllegalMove.class, () -> g.play(Hive.Tile.GRASSHOPPER, 2,2));
 
     }
 }
