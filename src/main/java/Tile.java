@@ -28,6 +28,14 @@ public abstract class Tile {
         return tile.equals(kind);
     }
 
+    public boolean samePlayer(Tile t) {
+        return this.player.equals(t.player);
+    }
+
+    public boolean samePlayer(Hive.Player color) {
+        return  this.player.equals(color);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -71,6 +79,11 @@ public abstract class Tile {
         } else {
             return min;
         }
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Tile(%s, %s)", this.player, this.tile);
     }
 }
 
