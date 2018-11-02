@@ -1,3 +1,5 @@
+import nl.hanze.hive.Hive;
+
 import java.util.*;
 
 public class Board {
@@ -19,13 +21,13 @@ public class Board {
         this.internalState = internalState;
     }
 
-    public void putTile(Position position, Tile tile) throws IllegalPositionException {
+    public void putTile(Position position, Tile tile) throws Hive.IllegalMove {
         Stack<Tile> tiles;
 
         // controleer of de tile al is gespeeld. Je kan 1 steen niet twee keer spelen.
         for(Stack<Tile> stack : internalState.values()){
             if(stack.contains(tile)){
-                throw new IllegalPositionException("This tile has allready been placed");
+                throw new Hive.IllegalMove("This tile has allready been placed");
             }
         }
 
@@ -52,9 +54,9 @@ public class Board {
         return surroundingTiles;
     }
 
-    public void moveTile(Position from, Position to) throws EmptyPositionException {
+    public void moveTile(Position from, Position to) throws Hive.IllegalMove {
         if (!internalState.containsKey(from)) {
-            throw new EmptyPositionException();
+            throw new Hive.IllegalMove();
         } else {
             Stack<Tile> tileStack = internalState.get(from);
             Tile movedTile = tileStack.pop();
@@ -73,24 +75,5 @@ public class Board {
 
             }
         }
-    }
-}
-
-class IllegalPositionException extends Exception {
-    public IllegalPositionException() {
-
-    }
-
-    public IllegalPositionException(String s) {
-        super(s);
-    }
-}
-
-class EmptyPositionException extends Exception {
-    public EmptyPositionException() {
-    }
-
-    public EmptyPositionException(String s) {
-        super(s);
     }
 }
