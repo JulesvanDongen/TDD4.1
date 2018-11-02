@@ -18,7 +18,7 @@ class Player {
 
     public Tile playTile(Hive.Tile kind) throws NoSuchTileException, Hive.IllegalMove {
 
-        if(!isQueenPlayed && tilesPlayed >= 3){
+        if(!isQueenPlayed && tilesPlayed >= 3 && ! kind.equals(Hive.Tile.QUEEN_BEE)){
             throw new Hive.IllegalMove("Queen bee should be the fourth played tile");
         }
 

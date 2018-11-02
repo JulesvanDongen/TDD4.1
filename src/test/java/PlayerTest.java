@@ -64,6 +64,8 @@ class PlayerTest {
             player.playTile(Hive.Tile.QUEEN_BEE);
         } catch (NoSuchTileException e) {
             fail("The player should have a Queen Bee when it is created");
+        } catch (Hive.IllegalMove illegalMove) {
+            fail("this is the first tile, so can be any tile");
         }
 
         assertFalse(player.hasQueenBee());
