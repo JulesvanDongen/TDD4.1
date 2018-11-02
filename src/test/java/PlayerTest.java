@@ -36,7 +36,7 @@ class PlayerTest {
     }
 
     @Test
-    void whenCardPlayedThenCardRemovedFromHand(){
+    void whenTilePlayedThenTileRemovedFromHand(){
         Player p = new Player(Hive.Player.WHITE);
         int initGrassHopperCount = 3;
         try {
