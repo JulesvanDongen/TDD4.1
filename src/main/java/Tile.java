@@ -62,6 +62,10 @@ public abstract class Tile {
         HashSet<Position> nSet = new HashSet<>(tilesSurroundingA.keySet());
         nSet.retainAll(tilesSurroundingB.keySet());
 
+        if (!board.getInternalState().keySet().contains(b) && nSet.size() == 0) {
+            return false; // The tile cannot be moved because it does not touch a tile when sliding to an empty position
+        }
+
         return getMinStackSize(nSet, board) < Math.max(board.getInternalState().get(a).size() - 1, board.getInternalState().get(b).size());
     }
 
