@@ -113,6 +113,47 @@ public class BoardSpec {
     }
 
     @Test
+    @Tag("2d")
+    public void whenTileAlreadyPlayedThenThrowIllegalPositionException(){
+        Board b = new Board();
+        Tile t = new QueenBee(Hive.Player.BLACK);
+        Position p1 = new Position(0, 0);
+        Position p2 = new Position(1,1);
+
+        try {
+            b.putTile(p1, t);
+        } catch (IllegalPositionException e) {
+            fail("Tile could not be placed. " + e.getMessage());
+        }
+
+        assertThrows(IllegalPositionException.class, () -> b.putTile(p2, t));
+
+    }
+
+    @Test
+    @Tag("2d")
+    public void whenTwoDifferentTilesPlayedThenNoException(){
+        Board b = new Board();
+        Tile t1 = new Beetle(Hive.Player.BLACK);
+        Tile t2 = new Beetle(Hive.Player.BLACK);
+
+        Position p1 = new Position(0, 0);
+        Position p2 = new Position(1, 1);
+
+        try {
+            b.putTile(p1, t1);
+        } catch (IllegalPositionException e) {
+           fail("The first tile should be able to be placed " + e.getMessage());
+        }
+
+        try {
+            b.putTile(p2, t2);
+        } catch (IllegalPositionException e) {
+           fail("The second tile should be able to be placed " + e.getMessage());
+        }
+    }
+
+    @Test
     @Tag("2f")
     public void whenStonesAreOnTopOfEachotherAndPositionIsMovedThenTopOneIsMoved() {
         HashMap<Position, Stack<Tile>> map = new HashMap<>();
