@@ -1,18 +1,10 @@
-import javafx.geometry.Pos;
 import nl.hanze.hive.Hive;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock.*;
-import org.mockito.Mockito.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Stack;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 class HiveGameSpec {
 
@@ -85,8 +77,8 @@ class HiveGameSpec {
         Position queenPos = new Position(0, 0);
         try {
             b.putTile(queenPos, new QueenBee(Hive.Player.WHITE));
-        } catch (IllegalPositionException e) {
-            e.printStackTrace();
+        } catch (Hive.IllegalMove illegalMove) {
+            illegalMove.printStackTrace();
         }
 
         //surround whit queen whith black grasshoppers
@@ -94,8 +86,8 @@ class HiveGameSpec {
             for (Position p : queenPos.getSurroundingPositions()) {
                 b.putTile(p, new Grasshopper(Hive.Player.BLACK));
             }
-        } catch (IllegalPositionException e) {
-            e.printStackTrace();
+        } catch (Hive.IllegalMove illegalMove) {
+            illegalMove.printStackTrace();
         }
 
 
@@ -112,8 +104,8 @@ class HiveGameSpec {
         Position queenPos = new Position(0, 0);
         try {
             b.putTile(queenPos, new QueenBee(Hive.Player.WHITE));
-        } catch (IllegalPositionException e) {
-            e.printStackTrace();
+        } catch (Hive.IllegalMove illegalMove) {
+            illegalMove.printStackTrace();
         }
 
         //surround whit queen whith  5 black grasshoppers
@@ -123,8 +115,8 @@ class HiveGameSpec {
                 Position p = posAroundQueen.get(i);
                 b.putTile(p, new Grasshopper(Hive.Player.BLACK));
             }
-        } catch (IllegalPositionException e) {
-            e.printStackTrace();
+        } catch (Hive.IllegalMove illegalMove) {
+            illegalMove.printStackTrace();
         }
 
 
@@ -149,8 +141,8 @@ class HiveGameSpec {
             for(Position p: blackQueenPos.getSurroundingPositions()) {
                 b.putTile(p, new Grasshopper(Hive.Player.WHITE));
             }
-        } catch (IllegalPositionException e) {
-            e.printStackTrace();
+        } catch (Hive.IllegalMove illegalMove) {
+            illegalMove.printStackTrace();
         }
 
         HiveGame g = new HiveGame(b);
