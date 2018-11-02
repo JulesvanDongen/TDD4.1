@@ -8,8 +8,8 @@ class Player {
     private Hive.Player color;
 
     public Player(Hive.Player color) {
-        tiles = initTiles();
         this.color = color;
+        tiles = initTiles();
     }
 
     public Tile playTile(Hive.Tile kind) throws NoSuchTileException{

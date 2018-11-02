@@ -65,4 +65,16 @@ class PlayerTest {
 
         assertFalse(player.hasQueenBee());
     }
+
+    @Test
+    void whenPlayerCreatedAllTilesOwnedByPlayer(){
+        Player whitPlayer = new Player(Hive.Player.WHITE);
+        Player blackPlayer = new Player(Hive.Player.BLACK);
+
+        assertAll(
+                () -> whitPlayer.availableTiles().stream().allMatch(t -> t.samePlayer(Hive.Player.WHITE)),
+                () -> blackPlayer.availableTiles().stream().allMatch(t -> t.samePlayer(Hive.Player.BLACK))
+        );
+    }
+
 }

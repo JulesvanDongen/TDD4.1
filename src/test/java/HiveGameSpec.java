@@ -95,6 +95,7 @@ class HiveGameSpec {
 
         try {
             game.move(1,1, 1,0);
+            p2 = game.getTurn();
         } catch (Hive.IllegalMove illegalMove) {
             fail(illegalMove);
         }
@@ -291,5 +292,38 @@ class HiveGameSpec {
         HiveGame g = new HiveGame(b);
         assertThrows(Hive.IllegalMove.class, () -> g.play(Hive.Tile.GRASSHOPPER, 2,2));
 
+    }
+
+    @Test
+    @Tag("4d")
+    public void whenTilesOwnedByBothPlayersOnBoardThenTileCanNotBeAdjecentToOpponent() {
+        Board b = new Board();
+
+        try {
+            b.putTile(new Position(0,0), new Grasshopper(Hive.Player.WHITE));
+            b.putTile(new Position(1, 0), new Beetle(Hive.Player.BLACK));
+            b.putTile(new Position(0,1), new SoldierAnt(Hive.Player.WHITE));
+
+        } catch (Hive.IllegalMove illegalMove) {
+            fail("");
+        }
+
+        HiveGame g = new HiveGame(b);
+
+        assertThrows(Hive.IllegalMove.class, () -> g.play(Hive.Tile.BEETLE, 2,0));
+
+    }
+
+    @Test
+    @Tag("4d")
+    public void whenTilesOnlyOwnedByWhiteThenBlackCanPlayNextToWhite() {
+        HiveGame game = new HiveGame(new Board());
+
+        try{
+            game.play(Hive.Tile.SOLDIER_ANT, 0,0);
+            game.play(Hive.Tile.BEETLE, 0, 1);
+        } catch (Hive.IllegalMove illegalMove) {
+            fail("");
+        }
     }
 }
