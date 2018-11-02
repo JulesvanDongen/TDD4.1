@@ -52,33 +52,66 @@ public class Board {
         return surroundingTiles;
     }
 
-    public void moveTile(Position from, Position to) throws EmptyPositionException {
+    public boolean positionHasTile(Position position) {
+        return internalState.keySet().contains(position);
+    }
+
+    public void moveTile(Position from, Position to) throws EmptyPositionException, ImpossibleMoveException {
         if (!internalState.containsKey(from)) {
             throw new EmptyPositionException();
         } else {
             Stack<Tile> tileStack = internalState.get(from);
             Tile movedTile = tileStack.pop();
 
-            if (internalState.isEmpty()) {
-                internalState.remove(from);
-            }
+            Set<Position> possibleMoves = movedTile.getPossibleMoves(this, from);
+            if (possibleMoves.contains(to)) {
 
-            if (internalState.containsKey(to)) {
-                Stack<Tile> tiles = internalState.get(to);
-                tiles.push(movedTile);
+
+                if (tileStack.isEmpty()) {
+                    internalState.remove(from);
+                }
+
+                if (internalState.containsKey(to)) {
+                    Stack<Tile> tiles = internalState.get(to);
+                    tiles.push(movedTile);
+                } else {
+                    Stack<Tile> stack = new Stack<>();
+                    stack.push(movedTile);
+                    internalState.put(to, stack);
+                }
             } else {
-                Stack<Tile> stack = new Stack<>();
-                stack.push(movedTile);
-                internalState.put(to, stack);
-
+                throw new ImpossibleMoveException();
             }
         }
+    }
+
+    public boolean isTileNearHive(Position position) {
+        Map<Position, Stack<Tile>> surroundingTiles = getSurroundingTiles(position);
+        return !surroundingTiles.keySet().isEmpty();
+    }
+
+    public int getPositionHeight(Position position) {
+        if (internalState.keySet().contains(position)) {
+            return internalState.get(position).size();
+        } else {
+            return 0;
+        }
+    }
+}
+
+class ImpossibleMoveException extends Exception {
+    public ImpossibleMoveException() {
+        super();
+    }
+
+    public ImpossibleMoveException(String s) {
+        super(s);
     }
 }
 
 class IllegalPositionException extends Exception {
     public IllegalPositionException() {
-
+        super();
     }
 
     public IllegalPositionException(String s) {
@@ -88,6 +121,7 @@ class IllegalPositionException extends Exception {
 
 class EmptyPositionException extends Exception {
     public EmptyPositionException() {
+        super();
     }
 
     public EmptyPositionException(String s) {
