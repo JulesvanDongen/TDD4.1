@@ -21,6 +21,14 @@ public class Board {
 
     public void putTile(Position position, Tile tile) throws IllegalPositionException {
         Stack<Tile> tiles;
+
+        // controleer of de tile al is gespeeld. Je kan 1 steen niet twee keer spelen.
+        for(Stack<Tile> stack : internalState.values()){
+            if(stack.contains(tile)){
+                throw new IllegalPositionException("This tile has allready been placed");
+            }
+        }
+
         if (!internalState.containsKey(position)) {
             tiles = new Stack<>();
             internalState.put(position, tiles);
