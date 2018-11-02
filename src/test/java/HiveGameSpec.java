@@ -1,15 +1,16 @@
 import nl.hanze.hive.Hive;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-import sun.security.provider.ConfigFile;
 
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+
+import java.util.List;
+import java.util.Stack;
+
 import static org.mockito.Mockito.when;
 
 class HiveGameSpec {
@@ -241,7 +242,31 @@ class HiveGameSpec {
         HiveGame hiveGame = new HiveGame(board);
 
         assertThrows(Hive.IllegalMove.class, () -> {
-            hiveGame.move(0,0, 1,0);
+            hiveGame.move(0, 0, 1, 0);
         });
+    }
+
+    @Test
+    @Tag("4b")
+    public void whenTilePlayedThenOnlyOnEmptyPosition() {
+        Board b1 = new Board();
+        Board b2 = new Board();
+        Position p = new Position(13,13);
+        try {
+            b2.putTile(p, new SoldierAnt(Hive.Player.BLACK));
+        } catch (Hive.IllegalMove illegalMove) {
+            illegalMove.printStackTrace();
+        }
+        HiveGame g1 = new HiveGame(b1); // game where position to be played is empty
+        HiveGame g2 = new HiveGame(b2); // game where position to be played is occupied
+
+        try {
+            g1.play(Hive.Tile.GRASSHOPPER, 13, 13);
+        } catch (Hive.IllegalMove illegalMove) {
+            fail(illegalMove);
+        }
+
+        assertThrows(Hive.IllegalMove.class, () -> g2.play(Hive.Tile.BEETLE, 13, 13));
+
     }
 }

@@ -27,6 +27,19 @@ class HiveGame {
     }
 
     public void play(Hive.Tile tile, int q, int r) throws Hive.IllegalMove {
+        Position toPos = new Position(q, r);
+        try {
+            Stack<Tile> tilesAt = board.getInternalState().getOrDefault(toPos, new Stack<>());
+            if(tilesAt.size() == 0) {
+                Tile toPlay = currentPlayer.playTile(tile);
+                board.putTile(toPos, toPlay);
+            } else {
+                throw new Hive.IllegalMove("This position is empty");
+            }
+
+        } catch (NoSuchTileException e) {
+            throw new Hive.IllegalMove("Player has no such tile");
+        }
         switchTurns();
     }
 
