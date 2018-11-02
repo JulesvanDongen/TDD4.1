@@ -1,9 +1,6 @@
 import nl.hanze.hive.Hive;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 class Player {
 
@@ -50,4 +47,22 @@ class Player {
         return new ArrayList<>(Arrays.asList(startTiles));
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Player player = (Player) o;
+        return Objects.equals(tiles, player.tiles) &&
+                color == player.color;
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(tiles, color);
+    }
+
+    public Hive.Player getColor() {
+        return color;
+    }
 }
