@@ -215,4 +215,28 @@ public class BoardSpec {
             fail("Exception was thrown: " + e.getMessage());
         }
     }
+
+    @Test
+    @Tag("5d")
+    public void whenTileMovedAndSeperatesHiveIntoGroupsThenThrowIllegalMoveException() {
+        HashMap<Position, Stack<Tile>> map = new HashMap<>();
+
+        Stack<Tile> a = new Stack<>();
+        a.push(new Beetle(Hive.Player.WHITE));
+        map.put(new Position(0, 0), a);
+
+        Stack<Tile> b = new Stack<>();
+        b.push(mock(Beetle.class));
+        map.put(new Position(1, 0), b);
+
+        Stack<Tile> c = new Stack<>();
+        c.push(mock(Beetle.class));
+        map.put(new Position(-1, 0), c);
+
+        Board board = new Board(map);
+
+        assertThrows(Hive.IllegalMove.class, () -> {
+            board.moveTile(new Position(0,0), new Position(1,0));
+        });
+    }
 }
