@@ -78,7 +78,16 @@ class HiveGameSpec {
         b.push(spider);
         map.put(new Position(0, 0), b);
 
-        HiveGame game = new HiveGame(new Board(map));
+        Player player1 = new Player(Hive.Player.WHITE);
+        Player player2 = new Player(Hive.Player.BLACK);
+
+        try {
+            player1.playTile(Hive.Tile.QUEEN_BEE); // Play the Queen Bee before moving
+        } catch (NoSuchTileException e) {
+            fail(e);
+        }
+
+        HiveGame game = new HiveGame(new Board(map), player1, player2);
         Player p1 = game.getTurn();
         Player p2 = null;
 
@@ -192,10 +201,30 @@ class HiveGameSpec {
         HiveGame hiveGame = new HiveGame(board);
 
         Player turn = hiveGame.getTurn();
-        System.out.println(turn.getColor());
 
         assertThrows(Hive.IllegalMove.class, () -> {
             hiveGame.move(0, 0, 1, 0);
+        });
+    }
+
+    @Test
+    @Tag("5b")
+    public void whenPlayerMovesTileWhileQueenBeeIsNotPlayedThenThrowIllegalMoveException() {
+        HashMap<Position, Stack<Tile>> map = new HashMap<>();
+
+        Stack<Tile> a = new Stack<>();
+        a.push(new Beetle(Hive.Player.BLACK));
+        map.put(new Position(0, 0), a);
+
+        Stack<Tile> b = new Stack<>();
+        b.push(new Beetle(Hive.Player.WHITE));
+        map.put(new Position(1, 0), b);
+
+        Board board = new Board(map);
+        HiveGame hiveGame = new HiveGame(board);
+
+        assertThrows(Hive.IllegalMove.class, () -> {
+            hiveGame.move(1,0, 0,0);
         });
     }
 }

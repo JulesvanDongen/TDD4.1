@@ -101,7 +101,6 @@ public class BoardSpec {
         map.put(oldPosition, tiles);
         Board board = new Board(map);
         HashSet<Position> positions = new HashSet<>(oldPosition.getSurroundingPositions());
-        System.out.println(positions);
         when(tile.getPossibleMoves(any(Board.class), any(Position.class))).thenReturn(positions);
         try {
             board.moveTile(oldPosition, newPosition);

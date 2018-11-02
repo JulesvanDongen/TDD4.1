@@ -52,7 +52,17 @@ class PlayerTest {
                 .count();
 
         assertEquals(initGrassHopperCount - 1, actual);
-
     }
 
+    @Test
+    void whenQueenBeePlayedThenPlayerHasNoQueenBee() {
+        Player player = new Player(Hive.Player.WHITE);
+        try {
+            player.playTile(Hive.Tile.QUEEN_BEE);
+        } catch (NoSuchTileException e) {
+            fail("The player should have a Queen Bee when it is created");
+        }
+
+        assertFalse(player.hasQueenBee());
+    }
 }

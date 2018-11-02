@@ -56,9 +56,17 @@ class Player {
                 color == player.color;
     }
 
+    public boolean hasQueenBee() {
+        for (Tile tile : tiles) {
+            if (tile.getClass().equals(QueenBee.class)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public int hashCode() {
-
         return Objects.hash(tiles, color);
     }
 

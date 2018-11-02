@@ -16,11 +16,14 @@ class HiveGame {
 
 
     public HiveGame(Board board) {
-        this.board = board;
-        this.p1 = new Player(Hive.Player.WHITE);
-        this.p2 = new Player(Hive.Player.BLACK);
-        this.currentPlayer = p1;
+        this(board, new Player(Hive.Player.WHITE), new Player(Hive.Player.BLACK));
+    }
 
+    public HiveGame(Board board, Player player1, Player player2) {
+        this.board = board;
+        this.p1 = player1;
+        this.p2 = player2;
+        this.currentPlayer = p1;
     }
 
     public void play(Hive.Tile tile, int q, int r) throws Hive.IllegalMove {
@@ -29,11 +32,15 @@ class HiveGame {
 
     public void move(int fromQ, int fromR, int toQ, int toR) throws Hive.IllegalMove {
         Tile topTile = board.getInternalState().get(new Position(fromQ, fromR)).peek();
-        if (topTile.samePlayer(currentPlayer.getColor())) {
-            board.moveTile(new Position(fromQ,fromR), new Position(toQ, toR));
-            switchTurns();
+        if (!currentPlayer.hasQueenBee()) {
+            if (topTile.samePlayer(currentPlayer.getColor())) {
+                board.moveTile(new Position(fromQ, fromR), new Position(toQ, toR));
+                switchTurns();
+            } else {
+                throw new Hive.IllegalMove("You cannot move your opponent's tiles.");
+            }
         } else {
-            throw new Hive.IllegalMove("You cannot move your opponent's tiles.");
+            throw new Hive.IllegalMove("You need to play your Queen Bee before you can move your tiles.");
         }
     }
 
