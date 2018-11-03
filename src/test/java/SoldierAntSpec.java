@@ -14,22 +14,29 @@ class SoldierAntSpec {
 
     @Test
     void whenSoldierAntMovesThenNoStepInMoveCanSplitHive() {
-        Board b = new Board();
 
-        try {
-            b.putTile(new Position(0, -1), new SoldierAnt(Hive.Player.WHITE));
-            b.putTile(new Position(0, 0), new SoldierAnt(Hive.Player.BLACK));
-            b.putTile(new Position(1, 02), new Beetle(Hive.Player.BLACK));
-            b.putTile(new Position(-1, 1), new Beetle(Hive.Player.WHITE));
-        } catch (Hive.IllegalMove illegalMove) {
-            fail("");
-        }
+        HashMap<Position, Stack<Tile>> map = new HashMap<>();
 
-        Tile antToMove = b.getInternalState().get(new Position(0, 0)).peek();
+        Stack<Tile> a = new Stack<>();
+        a.push(new SoldierAnt(Hive.Player.WHITE));
+        map.put(new Position(0, -1), a);
 
-        assertAll(
-                () -> antToMove.getPossibleMoves(b, new Position(0, 0)).isEmpty()
-        );
+        Stack<Tile> b = new Stack<>();
+        b.push(new SoldierAnt(Hive.Player.BLACK));
+        map.put(new Position(0, 0), b);
+
+        Stack<Tile> c = new Stack<>();
+        c.push(mock(Beetle.class));
+        map.put(new Position(1, 2), c);
+
+        Stack<Tile> d = new Stack<>();
+        d.push(mock(Beetle.class));
+        map.put(new Position(-1, 1), d);
+
+        Board board = new Board(map);
+
+        Tile antToMove = board.getInternalState().get(new Position(0, 0)).peek();
+        assertTrue(antToMove.getPossibleMoves(board, new Position(0,0)).isEmpty());
     }
 
     @Test

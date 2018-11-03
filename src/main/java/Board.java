@@ -69,6 +69,11 @@ public class Board {
         }
 
         Stack<Tile> tileStack = internalState.get(from);
+
+        if (tileStack.isEmpty()) {
+            throw new Hive.IllegalMove("This tile has no possible moves");
+        }
+
         Tile movedTile = tileStack.pop();
 
         Set<Position> possibleMoves = movedTile.getPossibleMoves(this, from);
@@ -87,7 +92,7 @@ public class Board {
                 internalState.put(to, stack);
             }
         } else {
-            throw new Hive.IllegalMove();
+            throw new Hive.IllegalMove("A tile cannot move to its own location");
         }
     }
 
