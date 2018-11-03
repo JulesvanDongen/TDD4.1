@@ -16,11 +16,11 @@ public class Position {
 
     public ArrayList<Position> getSurroundingPositions() {
         ArrayList<Position> positions = new ArrayList<>();
-        positions.add(new Position(this.q + 1, this.r));
-        positions.add(new Position(this.q + 1, this.r + 1));
-        positions.add(new Position(this.q, this.r + 1));
         positions.add(new Position(this.q, this.r - 1));
-        positions.add(new Position(this.q - 1, this.r - 1));
+        positions.add(new Position(this.q + 1, this.r -1));
+        positions.add(new Position(this.q + 1, this.r));
+        positions.add(new Position(this.q, this.r + 1));
+        positions.add(new Position(this.q - 1, this.r + 1));
         positions.add(new Position(this.q - 1, this.r));
         return positions;
     }
