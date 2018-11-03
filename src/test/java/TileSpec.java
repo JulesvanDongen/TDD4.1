@@ -19,22 +19,22 @@ public class TileSpec {
         Beetle beetle = new Beetle(Hive.Player.WHITE);
         tiles00.push(beetle);
 
-        Stack<Tile> tiles01 = new Stack<>();
+        Stack<Tile> tiles1n1 = new Stack<>();
         Beetle beetle1 = new Beetle(Hive.Player.WHITE);
-        tiles01.push(beetle1);
+        tiles1n1.push(beetle1);
 
-        Stack<Tile> tiles10 = new Stack<>();
+        Stack<Tile> tiles01 = new Stack<>();
         Beetle beetle2 = new Beetle(Hive.Player.WHITE);
-        tiles10.push(beetle2);
+        tiles01.push(beetle2);
 
         map.put(new Position(0, 0), tiles00);
+        map.put(new Position(1, -1), tiles1n1);
         map.put(new Position(0, 1), tiles01);
-        map.put(new Position(1, 0), tiles10);
 
         Board board = new Board(map);
 
         assertThrows(Hive.IllegalMove.class, () -> {
-            board.moveTile(new Position(0,0), new Position(1,1));
+            board.moveTile(new Position(0,0), new Position(1,0));
         });
     }
     
