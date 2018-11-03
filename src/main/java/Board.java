@@ -119,7 +119,7 @@ public class Board {
             }
 
             // If there are no remaining positions, the hive is not disconnected
-            return remainingPositions.size() == 0;
+            return remainingPositions.size() != 0;
         }
 
         return false;
