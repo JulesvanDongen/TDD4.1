@@ -27,7 +27,6 @@ public class SpiderSpec {
 
         Board board = new Board(map);
 
-
         Set<Position> possibleMoves = spider.getPossibleMoves(board, spiderPosition);
         assertAll(() -> {
             assertEquals(1, possibleMoves.size(), "There was more than one possible move"); // There is just one option, the Position opposite to 0,0
@@ -60,15 +59,49 @@ public class SpiderSpec {
 
     @Test
     @Tag("10c")
-    @Disabled
     void whenSpiderMovedThenOnlyMovesOverEmptyTiles() {
+        HashMap<Position, Stack<Tile>> map = new HashMap<>();
 
+        Stack<Tile> a = new Stack<>();
+        a.push(new Spider(Hive.Player.BLACK));
+        map.put(new Position(0, 0), a);
+
+        Stack<Tile> b = new Stack<>();
+        Spider spider = new Spider(Hive.Player.WHITE);
+        b.push(spider);
+        Position spiderPosition = new Position(0, 1);
+        map.put(spiderPosition, b);
+
+        Stack<Tile> c = new Stack<>();
+        c.push(new Spider(Hive.Player.WHITE));
+        map.put(new Position(1, 1), c);
+
+        Board board = new Board(map);
+
+        assertThrows(Hive.IllegalMove.class, () -> {
+            board.moveTile(spiderPosition, new Position(1, -1));
+        });
     }
 
     @Test
     @Tag("10d")
-    @Disabled
     void whenSpiderMovedThenCannotMoveToSpotBefore() {
+        HashMap<Position, Stack<Tile>> map = new HashMap<>();
 
+        Stack<Tile> a = new Stack<>();
+        a.push(new Spider(Hive.Player.BLACK));
+        map.put(new Position(0, 0), a);
+
+        Stack<Tile> b = new Stack<>();
+        Spider spider = new Spider(Hive.Player.WHITE);
+        b.push(spider);
+        Position spiderPosition = new Position(0, 1);
+        map.put(spiderPosition, b);
+
+        Board board = new Board(map);
+
+        assertThrows(Hive.IllegalMove.class, () -> {
+            board.moveTile(spiderPosition, new Position(1, -1));
+        });
     }
 }
