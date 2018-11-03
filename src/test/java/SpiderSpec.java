@@ -29,6 +29,7 @@ public class SpiderSpec {
 
         Board board = new Board(map);
 
+
         Set<Position> possibleMoves = spider.getPossibleMoves(board, spiderPosition);
         assertAll(() -> {
             assertEquals(1, possibleMoves.size(), "There was more than one possible move"); // There is just one option, the Position opposite to 0,0

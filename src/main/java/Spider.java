@@ -14,16 +14,22 @@ public class Spider extends Tile {
 
     @Override
     Set<Position> getPossibleMoves(Board board, Position currentPosition) {
-
-        return getPossibleMovesHelper(board, currentPosition, new HashSet<Position>(), 0);
+        return getPossibleMovesHelper(board, currentPosition, currentPosition, new HashSet<Position>(), 0);
     }
 
-    private Set<Position> getPossibleMovesHelper(Board board, Position currentPosition, Set<Position> passedPositions, int depth) {
+    private Set<Position> getPossibleMovesHelper(Board board, Position startingPosition, Position currentPosition, Set<Position> passedPositions, int depth) {
         ArrayList<Position> surroundingPositions = currentPosition.getSurroundingPositions();
         Set<Position> possiblePositions = surroundingPositions.stream()
                 .filter(p -> !board.getInternalState().keySet().contains(p)) // Tile is not occupied
                 .filter(p -> !passedPositions.contains(p)) // We have not passed this tile already
-                .filter(p -> board.getSurroundingTiles(p).keySet().size() > 0) // The resulting position is next to a tile
+                .filter(p ->  {
+                    Set<Position> surroundingTilePositions = board.getSurroundingTiles(p).keySet();
+                    if (surroundingTilePositions.contains(startingPosition)) {
+                        return surroundingTilePositions.size() - 1 > 0;
+                    } else {
+                        return surroundingTilePositions.size() > 0;
+                    }
+                }) // The resulting position is next to a tile
                 .filter(p -> canSlideTo(currentPosition, p, board)) // We can slide to this tile
                 .collect(Collectors.toSet());
 
@@ -34,7 +40,7 @@ public class Spider extends Tile {
             for (Position possiblePosition : possiblePositions) {
                 HashSet<Position> passedPositionsCopy = new HashSet<>(passedPositions);
                 passedPositionsCopy.add(possiblePosition);
-                Set<Position> possibleEndPositions = getPossibleMovesHelper(board, possiblePosition, passedPositionsCopy, depth + 1);
+                Set<Position> possibleEndPositions = getPossibleMovesHelper(board, startingPosition, possiblePosition, passedPositionsCopy, depth + 1);
                 endPositions.addAll(possibleEndPositions);
             }
             return endPositions;
