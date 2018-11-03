@@ -17,22 +17,22 @@ class PositionSpec {
                     assertEquals(6, surroundingPositions.size());
                 },
                 () -> {
-                    assertTrue(surroundingPositions.contains(new Position(0, 1)));
+                    assertTrue(surroundingPositions.contains(new Position(0, -1)));
+                },
+                () -> {
+                    assertTrue(surroundingPositions.contains(new Position(-1, 1)));
                 },
                 () -> {
                     assertTrue(surroundingPositions.contains(new Position(1, 0)));
                 },
                 () -> {
-                    assertTrue(surroundingPositions.contains(new Position(1, 1)));
+                    assertTrue(surroundingPositions.contains(new Position(0, 1)));
+                },
+                () -> {
+                    assertTrue(surroundingPositions.contains(new Position(-1, 1)));
                 },
                 () -> {
                     assertTrue(surroundingPositions.contains(new Position(-1, 0)));
-                },
-                () -> {
-                    assertTrue(surroundingPositions.contains(new Position(-1, -1)));
-                },
-                () -> {
-                    assertTrue(surroundingPositions.contains(new Position(0, -1)));
                 }
                 );
     }

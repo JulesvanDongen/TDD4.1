@@ -27,6 +27,47 @@ class HiveGame {
     }
 
     public void play(Hive.Tile tile, int q, int r) throws Hive.IllegalMove {
+        Position toPos = new Position(q, r);
+
+        try {
+            Stack<Tile> tilesAt = board.getInternalState().getOrDefault(toPos, new Stack<>());
+            List<Tile> allTilesOnBoard = board.getInternalState().values().stream()
+                    .flatMap(stack -> stack.stream())
+                    .collect(Collectors.toList());
+
+            List<Tile> surroundingTiles = board.getSurroundingTiles(toPos).values().stream()
+                    .flatMap(stack -> stack.stream())
+                    .collect(Collectors.toList());
+
+            long nrTilesCurrentPlayer = allTilesOnBoard.stream()
+                        .filter(Objects::nonNull)
+                        .filter(t -> t.samePlayer(currentPlayer.getColor()))
+                        .count();
+
+            long nrTilesOpponent = allTilesOnBoard.stream()
+                        .filter(t -> ! t.samePlayer(currentPlayer.getColor()))
+                        .count();
+
+            boolean isEmptyPos = tilesAt.isEmpty();
+            boolean isAdjacentToHive = (board.isTileNearHive(toPos) || board.getInternalState().isEmpty()); // toPos nearHive, unless board is empty
+
+            boolean isAdjacentToOpponent = surroundingTiles.stream().anyMatch(t -> ! t.samePlayer(currentPlayer.getColor()));
+            boolean canPlayAdjacentToOpponent = nrTilesOpponent > 0 && nrTilesCurrentPlayer == 0;
+
+            if(isEmptyPos
+                    && isAdjacentToHive
+                    && (isAdjacentToOpponent ? canPlayAdjacentToOpponent : true) // beschreven in 4.d
+                    )
+            {
+                Tile toPlay = currentPlayer.playTile(tile);
+                board.putTile(toPos, toPlay);
+            }else {
+                throw new Hive.IllegalMove("This position is invalid");
+            }
+
+        } catch (NoSuchTileException e) {
+            throw new Hive.IllegalMove("Player has no such tile");
+        }
         switchTurns();
     }
 
