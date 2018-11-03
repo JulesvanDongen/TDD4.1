@@ -1,10 +1,14 @@
-import javafx.geometry.Pos;
+
+//import javafx.geometry.Pos;
 import nl.hanze.hive.Hive;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
 import java.util.Set;
+import java.util.Stack;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
 
 class SoldierAntSpec {
 
@@ -48,7 +52,19 @@ class SoldierAntSpec {
 
     @Test
     void whenSoldierAntMovesThenEachStepHasToSlide() {
+        HashMap<Position, Stack<Tile>> map = new HashMap<>();
 
+        for (Position surroundingPosition : new Position(0, 0).getSurroundingPositions()) {
+            Stack<Tile> tiles = new Stack<>();
+            tiles.push(new SoldierAnt(Hive.Player.WHITE));
+            map.put(surroundingPosition, tiles);
+        }
+
+        Board board = new Board(map);
+
+        assertThrows(Hive.IllegalMove.class, () -> {
+            board.moveTile(new Position(0,1), new Position(0,0));
+        });
     }
 
 }
