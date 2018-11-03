@@ -61,4 +61,13 @@ public class TileSpec {
 
         beetle.canSlideTo(posA, new Position(0, 1), board);
     }
+
+    @Test
+    @Tag("2d")
+    void whenTwoDifferentTilesOfSamePlayerAndSameCharacterThenNotEqual(){
+        Tile t1 = new Beetle(Hive.Player.BLACK);
+        Tile t2 = new Beetle(Hive.Player.BLACK);
+
+        assertFalse(t1.equals(t2));
+    }
 }
