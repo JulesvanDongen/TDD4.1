@@ -54,27 +54,51 @@ public abstract class Tile {
     abstract Set<Position> getPossibleMoves(Board board, Position currentPosition);
 
     public boolean canSlideTo(Position a, Position b, Board board) {
-        Map<Position, Stack<Tile>> tilesSurroundingA = board.getSurroundingTiles(a);
-        if (!tilesSurroundingA.containsKey(b) || a.equals(b)) {
+
+        ArrayList<Position> surroundingPositions = a.getSurroundingPositions();
+        if (!surroundingPositions.contains(b) || a.equals(b)) {
             return false;
         }
-        Map<Position, Stack<Tile>> tilesSurroundingB = board.getSurroundingTiles(b);
-        HashSet<Position> nSet = new HashSet<>(tilesSurroundingA.keySet());
-        nSet.retainAll(tilesSurroundingB.keySet());
+        ArrayList<Position> surroundingPositionsb = b.getSurroundingPositions();
+        HashSet<Position> nSet = new HashSet<>(surroundingPositions);
+        nSet.retainAll(surroundingPositionsb);
 
         if (!board.getInternalState().keySet().contains(b) && nSet.size() == 0) {
             return false; // The tile cannot be moved because it does not touch a tile when sliding to an empty position
         }
 
-        return getMinStackSize(nSet, board) < Math.max(board.getInternalState().get(a).size() - 1, board.getInternalState().get(b).size());
+        int minStackSize = getMinStackSize(nSet, board);
+        int maxStackSize = getMaxStackSize(a, b, board);
+        return minStackSize <= maxStackSize;
+    }
+
+    private int getMaxStackSize(Position a, Position b, Board board) {
+        int sizeA = 0;
+
+        if (board.getInternalState().keySet().contains(a)) {
+            board.getInternalState().get(a).size();
+        }
+
+        int sizeB = 0;
+
+        if (board.getInternalState().keySet().contains(b)) {
+            sizeB = board.getInternalState().get(b).size();
+        }
+
+        return Math.max(sizeA - 1, sizeB);
     }
 
     private int getMinStackSize(Set<Position> positions, Board board) {
         int min = Integer.MAX_VALUE;
         for (Position position : positions) {
-            Stack<Tile> tiles = board.getInternalState().get(position);
-            if (tiles.size() < min) {
-                min = tiles.size();
+            int tileSize = 0;
+
+            if (board.getInternalState().keySet().contains(position)) {
+                tileSize = board.getInternalState().get(position).size();
+            }
+
+            if (tileSize < min) {
+                min = tileSize;
             }
         }
 
