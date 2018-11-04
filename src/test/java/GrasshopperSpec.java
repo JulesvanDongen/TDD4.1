@@ -81,7 +81,7 @@ public class GrasshopperSpec {
 
     @Test
     @Tag("11d")
-    void whenGrasshopperTriesToMoveToOccupiedTileThenThrowIllegalMoveException() {
+    void whenGrasshopperTriesToMoveToOccupiedTileThenCannotMoveThere() {
         HashMap<Position, Stack<Tile>> map = new HashMap<>();
 
         Stack<Tile> a = new Stack<>();
@@ -96,7 +96,7 @@ public class GrasshopperSpec {
 
         Board board = new Board(map);
 
-        assertFalse(grasshopper.getPossibleMoves(board, position).contains(new Position(0,0)));
+        assertFalse(grasshopper.getPossibleMoves(board, position).contains(new Position(0,0)), "The grasshopper could move to the occupied tile");
     }
 
     @Test
