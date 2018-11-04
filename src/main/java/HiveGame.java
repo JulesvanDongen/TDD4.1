@@ -86,6 +86,48 @@ class HiveGame {
     }
 
     public void pass() throws Hive.IllegalMove {
+        boolean canPlaceTiles = false;
+        Integer tileCount = board.getInternalState().keySet().stream().map(p -> board.getInternalState().get(p).peek().samePlayer(currentPlayer.getColor()) ? 1 : 0).reduce(0, (a, b) -> a + b);
+        if (tileCount == 0) {
+            throw new Hive.IllegalMove("You cannot pass because you can place tiles");
+        }
+
+        if (currentPlayer.availableTiles().size() > 0) {
+            Set<Position> ownPositions = board.getInternalState().keySet().stream()
+                    .filter(p -> board.getInternalState().get(p).peek().samePlayer(currentPlayer.getColor()))
+                    .flatMap(p -> {
+                        ArrayList<Position> surroundingPositions = p.getSurroundingPositions();
+                        surroundingPositions.removeAll(board.getInternalState().keySet());
+                        return surroundingPositions.stream();
+                    }).collect(Collectors.toSet());
+
+            Player opponent = null;
+            if (currentPlayer.getColor() == Hive.Player.WHITE) {
+                opponent = p2;
+            } else {
+                opponent = p1;
+            }
+
+            Player finalOpponent = opponent;
+            Set<Position> opponentPositions = board.getInternalState().keySet().stream()
+                    .filter(p -> board.getInternalState().get(p).peek().samePlayer(currentPlayer.getColor()))
+                    .flatMap(p -> {
+                        ArrayList<Position> surroundingPositions = p.getSurroundingPositions();
+                        surroundingPositions.removeAll(board.getInternalState().keySet());
+                        return surroundingPositions.stream();
+                    }).collect(Collectors.toSet());
+
+            ownPositions.removeAll(opponentPositions);
+
+            canPlaceTiles = ownPositions.size() != 0;
+        }
+
+        if (canPlaceTiles) {
+            throw new Hive.IllegalMove("You cannot pass because you can place tiles");
+        }
+
+
+
         switchTurns();
     }
 

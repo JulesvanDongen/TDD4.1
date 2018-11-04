@@ -1,6 +1,9 @@
 import nl.hanze.hive.Hive;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import java.util.*;
 
@@ -39,6 +42,43 @@ class HiveGameSpec {
 
         Player p2 = game.getTurn();
         assertFalse(p1 == p2);
+    }
+
+    @Test
+    @Tag("12a")
+    @Disabled
+    public void whenPlayerCanMoveTileAndPassesThenThrowIllegalMoveException() {
+
+        Board board = mock(Board.class);
+
+        HiveGame hiveGame = new HiveGame(board);
+    }
+
+    @Test
+    @Tag("12a")
+    public void whenPlayerCanPlayTileAndPassesThenThrowIllegalMoveException() {
+        Board board = mock(Board.class);
+
+        HashMap<Position, Stack<Tile>> map = new HashMap<>();
+        Stack<Tile> a = new Stack<>();
+        a.push(mock(Beetle.class, new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                return Hive.Player.BLACK;
+            }
+        }));
+        map.put(new Position(0, 0), a);
+
+        mock(Board.class, new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                return map;
+            }
+        });
+
+        HiveGame hiveGame = new HiveGame(board);
+
+        assertThrows(Hive.IllegalMove.class, hiveGame::pass);
     }
 
     @Test
