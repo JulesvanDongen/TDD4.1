@@ -126,7 +126,12 @@ class HiveGame {
             throw new Hive.IllegalMove("You cannot pass because you can place tiles");
         }
 
-
+        Set<Position> ownTiles = board.getInternalState().keySet().stream().filter(p -> board.getInternalState().get(p).peek().samePlayer(currentPlayer.getColor())).collect(Collectors.toSet());
+        for (Position ownTile : ownTiles) {
+            if (!board.getInternalState().get(ownTile).peek().getPossibleMoves(board, ownTile).isEmpty()) {
+                throw new Hive.IllegalMove("You cannot pass when a tile can be moved");
+            }
+        }
 
         switchTurns();
     }

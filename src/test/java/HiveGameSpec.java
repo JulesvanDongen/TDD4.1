@@ -46,12 +46,32 @@ class HiveGameSpec {
 
     @Test
     @Tag("12a")
-    @Disabled
     public void whenPlayerCanMoveTileAndPassesThenThrowIllegalMoveException() {
 
-        Board board = mock(Board.class);
+        HashMap<Position, Stack<Tile>> map = new HashMap<>();
+        Stack<Tile> a = new Stack<>();
+        Beetle beetle = mock(Beetle.class);
+        when(beetle.samePlayer(Hive.Player.WHITE)).thenReturn(true);
+        HashSet<Position> possibleMoves = new HashSet<>();
+        possibleMoves.add(new Position(1, 0));
+        when(beetle.getPossibleMoves(any(Board.class), any(Position.class))).thenReturn(possibleMoves);
+        a.push(beetle);
+        map.put(new Position(0, 0), a);
 
-        HiveGame hiveGame = new HiveGame(board);
+        Board board = mock(Board.class);
+        when(board.getInternalState()).thenReturn(map);
+
+
+        Player player1 = mock(Player.class);
+        when(player1.getColor()).thenReturn(Hive.Player.WHITE);
+        when(player1.availableTiles()).thenReturn(new ArrayList<>());
+
+        Player player2 = mock(Player.class);
+        when(player2.getColor()).thenReturn(Hive.Player.BLACK);
+
+        HiveGame hiveGame = new HiveGame(board, player1, player2);
+
+        assertThrows(Hive.IllegalMove.class, hiveGame::pass);
     }
 
     @Test
