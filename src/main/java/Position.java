@@ -14,6 +14,14 @@ public class Position {
         this.r = r;
     }
 
+    public int getQ() {
+        return q;
+    }
+
+    public int getR() {
+        return r;
+    }
+
     public ArrayList<Position> getSurroundingPositions() {
         ArrayList<Position> positions = new ArrayList<>();
         positions.add(new Position(this.q, this.r - 1));
