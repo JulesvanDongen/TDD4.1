@@ -101,8 +101,28 @@ public class GrasshopperSpec {
 
     @Test
     @Tag("11e")
-    @Disabled
     void whenGrasshopperMovesThenCannotJumpOverEmptyTiles() {
+        HashMap<Position, Stack<Tile>> map = new HashMap<>();
 
+        Stack<Tile> a = new Stack<>();
+        a.push(new Grasshopper(Hive.Player.WHITE));
+        map.put(new Position(0, 0), a);
+
+        Stack<Tile> b = new Stack<>();
+        b.push(new Grasshopper(Hive.Player.WHITE));
+        map.put(new Position(0, -2), b);
+
+        Stack<Tile> c = new Stack<>();
+        Grasshopper grasshopper = new Grasshopper(Hive.Player.WHITE);
+        c.push(grasshopper);
+        Position position = new Position(0, 1);
+        map.put(position, c);
+
+        Board board = new Board(map);
+
+        HashSet<Position> expectedPositions = new HashSet<>();
+        expectedPositions.add(new Position(0, -1));
+
+        assertEquals(expectedPositions, grasshopper.getPossibleMoves(board, position));
     }
 }
