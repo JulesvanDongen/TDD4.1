@@ -81,9 +81,22 @@ public class GrasshopperSpec {
 
     @Test
     @Tag("11d")
-    @Disabled
     void whenGrasshopperTriesToMoveToOccupiedTileThenThrowIllegalMoveException() {
+        HashMap<Position, Stack<Tile>> map = new HashMap<>();
 
+        Stack<Tile> a = new Stack<>();
+        a.push(new Grasshopper(Hive.Player.WHITE));
+        map.put(new Position(0, 0), a);
+
+        Stack<Tile> c = new Stack<>();
+        Grasshopper grasshopper = new Grasshopper(Hive.Player.WHITE);
+        c.push(grasshopper);
+        Position position = new Position(0, 1);
+        map.put(position, c);
+
+        Board board = new Board(map);
+
+        assertFalse(grasshopper.getPossibleMoves(board, position).contains(new Position(0,0)));
     }
 
     @Test
